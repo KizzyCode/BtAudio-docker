@@ -4,18 +4,24 @@ import sys
 
 if __name__ == "__main__":
     # Set address
-    print(f"{ os.environ }")
-    address = os.environ.get("BT_MAC_ADDRESS")
-    if address is not None:
+    if "ADDRESS" in os.environ:
+        # Get the vars
+        address = os.environ["ADDRESS"]
+        device = os.environ["DEVICE"]
+
         # Parse and reverse MAC address
         address_hex = address.split(":")
         address_hex = reversed(address_hex)
+        address_hex = map(lambda hex: f"0x{ hex }", address_hex)
 
         # Run subprocess
         print(f"*> Changing bluetooth device address to { address }...")
-        subprocess.run(["hcitool", "cmd", "0x3f", "0x001", *address_hex], check=True)
+        subprocess.run(["hcitool", "-i", device, "cmd", "0x3f", "0x001", *address_hex], check=True)
+        subprocess.run(["hciconfig", device, "reset"], check=True)
+        subprocess.run(["bluetoothctl", "power", "off"], check=True)
+        subprocess.run(["bluetoothctl", "power", "on"], check=True)
     
     # Become supervisord
     print(f"*> Starting supervisord...")
     sys.stdout.flush()
-    os.execl("/usr/bin/supervisord", "/usr/bin/supervisord", "-c", "/etc/supervisord.conf")
+    os.execlp("supervisord", "/usr/bin/supervisord", "-c", "/etc/supervisord.conf")

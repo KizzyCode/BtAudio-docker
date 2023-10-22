@@ -7,5 +7,6 @@ services:
     #volumes:
     #  - /var/containers/btaudio:/var/lib/bluetooth:rw
     # Set the bluetooth MAC address on startup
-    environment:
-      BT_MAC_ADDRESS: "DC:A6:32:B5:20:16"
+    #environment:
+    #  DEVICE: "hci0"
+    #  ADDRESS: "DC:A6:32:B5:20:17"

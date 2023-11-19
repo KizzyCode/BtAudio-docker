@@ -16,6 +16,7 @@ if __name__ == "__main__":
 
         # Run subprocess
         print(f"*> Changing bluetooth device address to { address }...")
+        subprocess.run(["hciconfig", device, "reset"], check=True)
         subprocess.run(["hcitool", "-i", device, "cmd", "0x3f", "0x001", *address_hex], check=True)
         subprocess.run(["hciconfig", device, "reset"], check=True)
     
